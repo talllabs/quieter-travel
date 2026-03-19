@@ -17,10 +17,12 @@
       display: flex;
       justify-content: space-between;
       padding: 20px 40px;
-      border-bottom: 1px solid #111;
-      position: sticky;
+      position: fixed;
+      width: 100%;
       top: 0;
-      background: #000;
+      background: rgba(0,0,0,0.5);
+      backdrop-filter: blur(10px);
+      z-index: 10;
     }
 
     header a {
@@ -30,112 +32,121 @@
       font-size: 14px;
     }
 
-    header a:hover { color: #fff; }
+    header a:hover { color: #00e0c6; }
 
     .hero {
-      padding: 100px 40px 60px;
-      max-width: 1000px;
+      height: 100vh;
+      background: url('https://images.unsplash.com/photo-1501785888041-af3ef285b470') center/cover no-repeat;
+      display: flex;
+      align-items: center;
+      padding: 0 40px;
+    }
+
+    .hero-overlay {
+      max-width: 700px;
     }
 
     .hero h1 {
-      font-size: 64px;
-      margin: 0 0 20px;
+      font-size: 70px;
       line-height: 1;
+      margin: 0 0 20px;
     }
 
     .hero p {
-      color: #aaa;
       font-size: 20px;
-      max-width: 600px;
+      color: #ddd;
     }
 
-    .filters {
-      margin-top: 40px;
-      display: flex;
-      gap: 10px;
-      flex-wrap: wrap;
+    .cta {
+      margin-top: 30px;
     }
 
-    .filter {
-      border: 1px solid #222;
-      padding: 10px 16px;
-      border-radius: 20px;
-      font-size: 14px;
-      color: #aaa;
+    .cta button {
+      background: #00e0c6;
+      border: none;
+      padding: 14px 28px;
+      font-size: 16px;
+      border-radius: 40px;
+      cursor: pointer;
+      color: #000;
+      font-weight: 600;
     }
 
     .section {
-      padding: 60px 40px;
-      border-top: 1px solid #111;
+      padding: 80px 40px;
     }
 
-    .map {
-      height: 350px;
-      border: 1px solid #222;
-      border-radius: 12px;
-      margin-bottom: 40px;
-      background: radial-gradient(circle at 30% 40%, #111, #000);
-      position: relative;
+    .section h2 {
+      font-size: 32px;
+      margin-bottom: 30px;
     }
 
-    .pin {
-      position: absolute;
-      width: 10px;
-      height: 10px;
-      background: #fff;
-      border-radius: 50%;
-      opacity: 0.7;
-    }
-
-    .pin:nth-child(1){ top: 40%; left: 30%; }
-    .pin:nth-child(2){ top: 60%; left: 55%; }
-    .pin:nth-child(3){ top: 30%; left: 70%; }
-    .pin:nth-child(4){ top: 70%; left: 20%; }
-
-    .locations {
+    .cards {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
       gap: 20px;
     }
 
     .card {
-      border: 1px solid #222;
+      position: relative;
+      border-radius: 16px;
+      overflow: hidden;
+      height: 320px;
+      display: flex;
+      align-items: flex-end;
+    }
+
+    .card img {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      top: 0;
+      left: 0;
+    }
+
+    .card-overlay {
+      position: relative;
+      background: linear-gradient(to top, rgba(0,0,0,0.8), transparent);
       padding: 20px;
-      border-radius: 12px;
-      background: #050505;
+      width: 100%;
     }
 
     .card h3 {
-      margin: 0 0 10px;
-      font-size: 18px;
-    }
-
-    .meta {
-      font-size: 12px;
-      color: #777;
-      margin-bottom: 10px;
+      margin: 0;
+      font-size: 20px;
     }
 
     .score {
-      font-size: 28px;
-      margin: 10px 0;
+      color: #00e0c6;
+      font-size: 18px;
+      margin-top: 5px;
     }
 
-    .tag {
-      display: inline-block;
-      border: 1px solid #333;
-      padding: 4px 10px;
-      margin-right: 6px;
-      margin-top: 6px;
-      font-size: 12px;
+    .map {
+      height: 350px;
+      border-radius: 16px;
+      overflow: hidden;
+      background: url('https://images.unsplash.com/photo-1526778548025-fa2f459cd5c1') center/cover;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-top: 20px;
+      border: 1px solid #111;
+    }
+
+    .map span {
+      background: rgba(0,0,0,0.6);
+      padding: 10px 20px;
       border-radius: 20px;
-      color: #aaa;
+      color: #00e0c6;
+      font-size: 14px;
     }
 
     footer {
       padding: 40px;
       border-top: 1px solid #111;
-      color: #555;
+      color: #666;
     }
   </style>
 </head>
@@ -145,78 +156,71 @@
 <header>
   <strong>QUIET TRAVEL</strong>
   <nav>
+    <a href="#">Explore</a>
     <a href="#">Map</a>
-    <a href="#">Places</a>
     <a href="#">About</a>
   </nav>
 </header>
 
 <section class="hero">
-  <h1>Silence is a destination.</h1>
-  <p>
-    Discover the quietest places on Earth using real noise data, environmental signals,
-    and smart mapping — built for highly sensitive travelers.
-  </p>
-
-  <div class="filters">
-    <div class="filter">Low Noise</div>
-    <div class="filter">Remote</div>
-    <div class="filter">Low Crowds</div>
-    <div class="filter">Nature</div>
+  <div class="hero-overlay">
+    <h1>Find silence.</h1>
+    <p>Data-driven discovery of the quietest places on Earth — built for highly sensitive travelers.</p>
+    <div class="cta">
+      <button>Explore Quiet Places</button>
+    </div>
   </div>
 </section>
 
 <section class="section">
-  <div class="map">
-    <div class="pin"></div>
-    <div class="pin"></div>
-    <div class="pin"></div>
-    <div class="pin"></div>
-  </div>
+  <h2>Quiet Destinations</h2>
 
-  <div class="locations">
+  <div class="cards">
 
     <div class="card">
-      <h3>Isle of Eigg</h3>
-      <div class="meta">Scotland</div>
-      <div class="score">92 Quiet Score</div>
-      <p>Minimal traffic. Strong natural soundscape. Limited visitor flow.</p>
-      <div class="tag">Remote</div>
-      <div class="tag">Coastal</div>
+      <img src="https://images.unsplash.com/photo-1500530855697-b586d89ba3ee"/>
+      <div class="card-overlay">
+        <h3>Stewart Island</h3>
+        <div class="score">95 Quiet Score</div>
+      </div>
     </div>
 
     <div class="card">
-      <h3>Stewart Island</h3>
-      <div class="meta">New Zealand</div>
-      <div class="score">95 Quiet Score</div>
-      <p>Low population density. Dense forest. Extremely low noise pollution.</p>
-      <div class="tag">Forest</div>
-      <div class="tag">Wildlife</div>
+      <img src="https://images.unsplash.com/photo-1470770841072-f978cf4d019e"/>
+      <div class="card-overlay">
+        <h3>Isle of Eigg</h3>
+        <div class="score">92 Quiet Score</div>
+      </div>
     </div>
 
     <div class="card">
-      <h3>Faroe Outer Villages</h3>
-      <div class="meta">Faroe Islands</div>
-      <div class="score">90 Quiet Score</div>
-      <p>Weather-buffered silence. Sparse settlement. Low infrastructure noise.</p>
-      <div class="tag">Mountain</div>
-      <div class="tag">Cold Climate</div>
+      <img src="https://images.unsplash.com/photo-1501785888041-af3ef285b470"/>
+      <div class="card-overlay">
+        <h3>Faroe Villages</h3>
+        <div class="score">90 Quiet Score</div>
+      </div>
     </div>
 
     <div class="card">
-      <h3>Karijini Edge Stays</h3>
-      <div class="meta">Western Australia</div>
-      <div class="score">88 Quiet Score</div>
-      <p>Expansive landscapes. Low visitor density outside peak periods.</p>
-      <div class="tag">Desert</div>
-      <div class="tag">Remote</div>
+      <img src="https://images.unsplash.com/photo-1500534314209-a25ddb2bd429"/>
+      <div class="card-overlay">
+        <h3>Karijini Edge</h3>
+        <div class="score">88 Quiet Score</div>
+      </div>
     </div>
 
   </div>
 </section>
 
+<section class="section">
+  <h2>Quiet Map</h2>
+  <div class="map">
+    <span>Interactive Quiet Map Coming Soon</span>
+  </div>
+</section>
+
 <footer>
-  Quiet is not empty. It is full of everything you need.
+  Quiet is a luxury.
 </footer>
 
 </body>
