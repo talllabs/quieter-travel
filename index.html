@@ -3,225 +3,1711 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Quiet Travel</title>
-
+  <title>Quiet Corners — Travel for the Overstimulated</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;1,400&family=DM+Mono:wght@300;400&family=DM+Sans:wght@300;400&display=swap" rel="stylesheet"/>
   <style>
-    body {
-      margin: 0;
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-      background: #000;
-      color: #fff;
+    :root {
+      --cream: #f4efe8;
+      --parchment: #ede5d8;
+      --warm-white: #faf8f4;
+      --stone: #9e9589;
+      --bark: #5c5248;
+      --ink: #2a2520;
+      --moss: #6b7c61;
+      --clay: #c4a882;
+      --mist: #d6dbd9;
+      --silence: #e8e3dc;
     }
 
-    header {
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--warm-white);
+      color: var(--ink);
+      font-family: 'DM Sans', sans-serif;
+      font-weight: 300;
+      overflow-x: hidden;
+      cursor: none;
+    }
+
+    /* Custom cursor */
+    .cursor {
+      width: 8px; height: 8px;
+      background: var(--moss);
+      border-radius: 50%;
+      position: fixed;
+      pointer-events: none;
+      z-index: 9999;
+      transition: transform 0.15s ease, opacity 0.2s;
+      transform: translate(-50%, -50%);
+    }
+    .cursor-ring {
+      width: 32px; height: 32px;
+      border: 1px solid var(--clay);
+      border-radius: 50%;
+      position: fixed;
+      pointer-events: none;
+      z-index: 9998;
+      transition: transform 0.4s ease, width 0.3s, height 0.3s, opacity 0.3s;
+      transform: translate(-50%, -50%);
+      opacity: 0.6;
+    }
+    body:hover .cursor { opacity: 1; }
+
+    /* Noise texture overlay */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+      pointer-events: none;
+      z-index: 0;
+      opacity: 0.5;
+    }
+
+    /* NAV */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      padding: 24px 48px;
       display: flex;
       justify-content: space-between;
-      padding: 20px 40px;
-      position: fixed;
-      width: 100%;
-      top: 0;
-      background: rgba(0,0,0,0.5);
-      backdrop-filter: blur(10px);
-      z-index: 10;
+      align-items: center;
+      mix-blend-mode: multiply;
     }
-
-    header a {
-      color: #aaa;
+    .nav-logo {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.1rem;
+      letter-spacing: 0.04em;
+      color: var(--ink);
       text-decoration: none;
-      margin-left: 20px;
-      font-size: 14px;
+    }
+    .nav-links {
+      display: flex;
+      gap: 36px;
+      list-style: none;
+    }
+    .nav-links a {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.68rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--bark);
+      text-decoration: none;
+      transition: color 0.3s;
+    }
+    .nav-links a:hover { color: var(--moss); }
+
+    /* HERO */
+    .hero {
+      min-height: 100vh;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      position: relative;
+      overflow: hidden;
     }
 
-    header a:hover { color: #00e0c6; }
+    .hero-left {
+      padding: 160px 64px 80px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      position: relative;
+      z-index: 2;
+    }
 
-    .hero {
-      height: 100vh;
-      background: url('https://images.unsplash.com/photo-1501785888041-af3ef285b470') center/cover no-repeat;
+    .hero-eyebrow {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.65rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--stone);
+      margin-bottom: 32px;
       display: flex;
       align-items: center;
-      padding: 0 40px;
+      gap: 12px;
+    }
+    .hero-eyebrow::before {
+      content: '';
+      display: inline-block;
+      width: 28px;
+      height: 1px;
+      background: var(--clay);
     }
 
-    .hero-overlay {
-      max-width: 700px;
+    .hero-headline {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(3.2rem, 5.5vw, 5.8rem);
+      line-height: 1.05;
+      font-weight: 400;
+      color: var(--ink);
+      margin-bottom: 32px;
+    }
+    .hero-headline em {
+      font-style: italic;
+      color: var(--moss);
     }
 
-    .hero h1 {
-      font-size: 70px;
-      line-height: 1;
-      margin: 0 0 20px;
+    .hero-sub {
+      font-size: 1.05rem;
+      line-height: 1.75;
+      color: var(--bark);
+      max-width: 380px;
+      margin-bottom: 52px;
     }
 
-    .hero p {
-      font-size: 20px;
-      color: #ddd;
+    .hero-ctas {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      align-items: flex-start;
     }
 
-    .cta {
-      margin-top: 30px;
-    }
-
-    .cta button {
-      background: #00e0c6;
+    .btn-primary {
+      background: var(--ink);
+      color: var(--cream);
+      font-family: 'DM Mono', monospace;
+      font-size: 0.72rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      padding: 18px 40px;
       border: none;
-      padding: 14px 28px;
-      font-size: 16px;
-      border-radius: 40px;
-      cursor: pointer;
-      color: #000;
-      font-weight: 600;
+      text-decoration: none;
+      display: inline-block;
+      transition: background 0.3s, transform 0.2s;
+      cursor: none;
+    }
+    .btn-primary:hover {
+      background: var(--moss);
+      transform: translateY(-2px);
     }
 
-    .section {
-      padding: 80px 40px;
+    .btn-ghost {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.68rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--bark);
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      transition: color 0.3s, gap 0.3s;
+      cursor: none;
     }
-
-    .section h2 {
-      font-size: 32px;
-      margin-bottom: 30px;
+    .btn-ghost::after {
+      content: '→';
+      transition: transform 0.3s;
     }
+    .btn-ghost:hover { color: var(--moss); gap: 14px; }
 
-    .cards {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-      gap: 20px;
-    }
-
-    .card {
+    .hero-right {
       position: relative;
-      border-radius: 16px;
       overflow: hidden;
-      height: 320px;
+      background: var(--parchment);
+    }
+    .hero-right-inner {
+      position: absolute;
+      inset: 0;
+      background:
+        linear-gradient(160deg, transparent 40%, rgba(107,124,97,0.12) 100%),
+        repeating-linear-gradient(0deg, transparent, transparent 59px, rgba(90,80,70,0.04) 60px),
+        repeating-linear-gradient(90deg, transparent, transparent 59px, rgba(90,80,70,0.04) 60px);
+    }
+
+    /* Animated sound-wave / quiet graphic */
+    .quiet-graphic {
+      position: absolute;
+      bottom: 80px;
+      left: 50%;
+      transform: translateX(-50%);
       display: flex;
       align-items: flex-end;
+      gap: 5px;
+    }
+    .qbar {
+      width: 3px;
+      background: var(--clay);
+      border-radius: 2px;
+      animation: breathe 3s ease-in-out infinite;
+      opacity: 0.5;
+    }
+    @keyframes breathe {
+      0%, 100% { transform: scaleY(1); }
+      50% { transform: scaleY(0.25); }
     }
 
-    .card img {
+    .hero-score-badge {
       position: absolute;
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      top: 0;
-      left: 0;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      text-align: center;
+    }
+    .badge-number {
+      font-family: 'Playfair Display', serif;
+      font-size: 7rem;
+      font-weight: 400;
+      color: var(--ink);
+      line-height: 1;
+      opacity: 0.08;
+    }
+    .badge-label {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.6rem;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      color: var(--stone);
+      margin-top: 8px;
     }
 
-    .card-overlay {
-      position: relative;
-      background: linear-gradient(to top, rgba(0,0,0,0.8), transparent);
-      padding: 20px;
-      width: 100%;
-    }
-
-    .card h3 {
-      margin: 0;
-      font-size: 20px;
-    }
-
-    .score {
-      color: #00e0c6;
-      font-size: 18px;
-      margin-top: 5px;
-    }
-
-    .map {
-      height: 350px;
-      border-radius: 16px;
+    /* MARQUEE */
+    .marquee-wrap {
+      background: var(--ink);
+      padding: 18px 0;
       overflow: hidden;
-      background: url('https://images.unsplash.com/photo-1526778548025-fa2f459cd5c1') center/cover;
+      position: relative;
+      z-index: 2;
+    }
+    .marquee-track {
+      display: flex;
+      white-space: nowrap;
+      animation: marquee 30s linear infinite;
+    }
+    .marquee-item {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.65rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--clay);
+      padding: 0 48px;
+    }
+    .marquee-sep {
+      color: var(--moss);
+      padding: 0 8px;
+    }
+    @keyframes marquee {
+      from { transform: translateX(0); }
+      to { transform: translateX(-50%); }
+    }
+
+    /* PROBLEM SECTION */
+    .problem {
+      padding: 140px 64px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 80px;
+      align-items: center;
+      max-width: 1300px;
+      margin: 0 auto;
+    }
+
+    .section-tag {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.62rem;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--stone);
+      margin-bottom: 28px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .section-tag::after {
+      content: '';
+      display: inline-block;
+      width: 36px;
+      height: 1px;
+      background: var(--clay);
+    }
+
+    .problem-headline {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(2rem, 3.5vw, 3.2rem);
+      line-height: 1.2;
+      margin-bottom: 28px;
+      color: var(--ink);
+    }
+    .problem-headline em { font-style: italic; color: var(--moss); }
+
+    .problem-text {
+      font-size: 1rem;
+      line-height: 1.9;
+      color: var(--bark);
+    }
+
+    .problem-right {
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+    }
+
+    .stat-row {
+      padding: 32px 0;
+      border-top: 1px solid var(--silence);
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+    }
+    .stat-row:last-child { border-bottom: 1px solid var(--silence); }
+    .stat-num {
+      font-family: 'Playfair Display', serif;
+      font-size: 2.8rem;
+      color: var(--ink);
+      font-weight: 400;
+    }
+    .stat-desc {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.68rem;
+      letter-spacing: 0.1em;
+      color: var(--stone);
+      text-align: right;
+      max-width: 200px;
+      text-transform: uppercase;
+      line-height: 1.6;
+    }
+
+    /* QUIET INDEX TOOL */
+    .index-section {
+      background: var(--ink);
+      color: var(--cream);
+      padding: 120px 64px;
+      position: relative;
+      overflow: hidden;
+    }
+    .index-section::before {
+      content: 'QUIET';
+      position: absolute;
+      top: -20px;
+      right: -20px;
+      font-family: 'Playfair Display', serif;
+      font-size: 18vw;
+      color: rgba(255,255,255,0.02);
+      pointer-events: none;
+      line-height: 1;
+      font-weight: 400;
+    }
+
+    .index-inner {
+      max-width: 1300px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 100px;
+      align-items: start;
+    }
+
+    .index-left .section-tag { color: var(--clay); }
+    .index-left .section-tag::after { background: var(--moss); }
+
+    .index-headline {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(2.2rem, 3.8vw, 3.8rem);
+      line-height: 1.1;
+      color: var(--cream);
+      margin-bottom: 28px;
+    }
+    .index-headline em { font-style: italic; color: var(--clay); }
+
+    .index-desc {
+      font-size: 0.95rem;
+      line-height: 1.9;
+      color: var(--stone);
+      margin-bottom: 48px;
+    }
+
+    .score-pillars {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+    .pillar {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+    }
+    .pillar-icon {
+      width: 36px;
+      height: 36px;
+      border: 1px solid rgba(196,168,130,0.3);
+      border-radius: 50%;
       display: flex;
       align-items: center;
       justify-content: center;
+      font-size: 0.85rem;
+      flex-shrink: 0;
+      color: var(--clay);
+    }
+    .pillar-text {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.68rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--stone);
+      line-height: 1.5;
+    }
+    .pillar-text strong { display: block; color: var(--cream); font-weight: 400; }
+
+    /* Search tool */
+    .search-tool {
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(196,168,130,0.15);
+      padding: 48px;
+      position: relative;
+    }
+    .search-label {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.62rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--stone);
+      margin-bottom: 20px;
+      display: block;
+    }
+    .search-input-wrap {
+      position: relative;
+      margin-bottom: 20px;
+    }
+    .search-input {
+      width: 100%;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(196,168,130,0.25);
+      color: var(--cream);
+      font-family: 'Playfair Display', serif;
+      font-size: 1.3rem;
+      padding: 20px 24px;
+      outline: none;
+      transition: border-color 0.3s;
+    }
+    .search-input::placeholder { color: rgba(158,149,137,0.5); font-style: italic; }
+    .search-input:focus { border-color: var(--clay); }
+    .search-btn {
+      width: 100%;
+      background: var(--moss);
+      color: var(--cream);
+      border: none;
+      font-family: 'DM Mono', monospace;
+      font-size: 0.68rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      padding: 18px;
+      cursor: none;
+      transition: background 0.3s;
+    }
+    .search-btn:hover { background: var(--clay); }
+
+    .result-panel {
+      margin-top: 32px;
+      display: none;
+      animation: fadeIn 0.5s ease;
+    }
+    .result-panel.visible { display: block; }
+
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; } }
+
+    .score-display {
+      display: flex;
+      align-items: baseline;
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+    .score-big {
+      font-family: 'Playfair Display', serif;
+      font-size: 5rem;
+      color: var(--cream);
+      line-height: 1;
+    }
+    .score-denom {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.75rem;
+      color: var(--stone);
+      letter-spacing: 0.1em;
+    }
+    .score-bar-wrap { margin-bottom: 24px; }
+    .score-bar-bg {
+      height: 2px;
+      background: rgba(255,255,255,0.08);
+      position: relative;
+      overflow: hidden;
+    }
+    .score-bar-fill {
+      height: 100%;
+      background: var(--moss);
+      transition: width 1.2s ease;
+      width: 0%;
+    }
+    .score-insights {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .insight-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px 0;
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+      font-family: 'DM Mono', monospace;
+      font-size: 0.65rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--stone);
+    }
+    .insight-val {
+      color: var(--clay);
+      font-size: 0.75rem;
+    }
+
+    .loading-steps {
+      display: none;
+      flex-direction: column;
+      gap: 10px;
+      margin-top: 24px;
+    }
+    .loading-steps.visible { display: flex; }
+    .load-step {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.6rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: rgba(158,149,137,0.4);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      transition: color 0.4s;
+    }
+    .load-step.active { color: var(--clay); }
+    .load-step.done { color: var(--moss); }
+    .load-step::before { content: '○'; font-size: 0.5rem; }
+    .load-step.active::before { content: '●'; animation: pulse 1s infinite; }
+    .load-step.done::before { content: '✓'; }
+    @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.3} }
+
+    /* GUIDE SECTION */
+    .guide-section {
+      padding: 120px 64px;
+      max-width: 1300px;
+      margin: 0 auto;
+    }
+    .guide-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      margin-bottom: 64px;
+    }
+    .guide-headline {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(2rem, 3.2vw, 3rem);
+      color: var(--ink);
+      max-width: 480px;
+      line-height: 1.2;
+    }
+    .guide-headline em { font-style: italic; color: var(--moss); }
+
+    .guide-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1px;
+      background: var(--silence);
+      border: 1px solid var(--silence);
+    }
+
+    .guide-card {
+      background: var(--warm-white);
+      padding: 48px 40px;
+      position: relative;
+      overflow: hidden;
+      transition: background 0.4s;
+    }
+    .guide-card:hover { background: var(--parchment); }
+    .guide-card::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 2px;
+      background: var(--moss);
+      transform: scaleX(0);
+      transition: transform 0.4s ease;
+      transform-origin: left;
+    }
+    .guide-card:hover::after { transform: scaleX(1); }
+
+    .card-region {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.58rem;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--stone);
+      margin-bottom: 20px;
+    }
+    .card-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.5rem;
+      color: var(--ink);
+      margin-bottom: 12px;
+      line-height: 1.2;
+    }
+    .card-title em { font-style: italic; }
+    .card-desc {
+      font-size: 0.88rem;
+      line-height: 1.8;
+      color: var(--bark);
+      margin-bottom: 28px;
+    }
+    .card-meta {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .card-score {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.6rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--stone);
+    }
+    .card-score-val {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.6rem;
+      color: var(--moss);
+    }
+    .card-link {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.6rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--bark);
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      transition: color 0.3s, gap 0.3s;
+      cursor: none;
+    }
+    .card-link:hover { color: var(--moss); gap: 12px; }
+
+    /* GATED GUIDE */
+    .gated {
+      background: var(--parchment);
+      padding: 100px 64px;
+      position: relative;
+      overflow: hidden;
+    }
+    .gated::before {
+      content: '8.4';
+      position: absolute;
+      right: 64px;
+      top: 50%;
+      transform: translateY(-50%);
+      font-family: 'Playfair Display', serif;
+      font-size: 22vw;
+      color: rgba(92,82,72,0.06);
+      pointer-events: none;
+      line-height: 1;
+    }
+    .gated-inner {
+      max-width: 1300px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 80px;
+      align-items: center;
+    }
+    .gated-label {
+      background: var(--moss);
+      color: var(--cream);
+      font-family: 'DM Mono', monospace;
+      font-size: 0.58rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      padding: 6px 14px;
+      display: inline-block;
+      margin-bottom: 28px;
+    }
+    .gated-headline {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(2rem, 3.5vw, 3.4rem);
+      color: var(--ink);
+      line-height: 1.1;
+      margin-bottom: 24px;
+    }
+    .gated-headline em { font-style: italic; color: var(--moss); }
+    .gated-sub {
+      font-size: 0.95rem;
+      line-height: 1.9;
+      color: var(--bark);
+      margin-bottom: 40px;
+    }
+    .gate-form { display: flex; gap: 0; }
+    .gate-input {
+      flex: 1;
+      background: var(--warm-white);
+      border: 1px solid var(--silence);
+      border-right: none;
+      padding: 16px 20px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.9rem;
+      color: var(--ink);
+      outline: none;
+    }
+    .gate-input::placeholder { color: var(--stone); }
+    .gate-submit {
+      background: var(--ink);
+      color: var(--cream);
+      border: 1px solid var(--ink);
+      font-family: 'DM Mono', monospace;
+      font-size: 0.62rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      padding: 16px 28px;
+      cursor: none;
+      transition: background 0.3s;
+      white-space: nowrap;
+    }
+    .gate-submit:hover { background: var(--moss); border-color: var(--moss); }
+
+    .gated-preview {
+      position: relative;
+    }
+    .preview-stops {
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+    }
+    .stop-row {
+      display: flex;
+      align-items: center;
+      gap: 24px;
+      padding: 24px 0;
+      border-bottom: 1px solid rgba(92,82,72,0.1);
+      position: relative;
+    }
+    .stop-num {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.6rem;
+      color: var(--clay);
+      letter-spacing: 0.1em;
+      min-width: 24px;
+    }
+    .stop-info {}
+    .stop-name {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.15rem;
+      color: var(--ink);
+      margin-bottom: 4px;
+    }
+    .stop-name em { font-style: italic; }
+    .stop-meta {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.6rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--stone);
+    }
+    .stop-score {
+      margin-left: auto;
+      font-family: 'Playfair Display', serif;
+      font-size: 1.8rem;
+      color: var(--moss);
+    }
+    .locked-overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to bottom, transparent 40%, var(--parchment) 100%);
+      display: flex;
+      align-items: flex-end;
+      justify-content: center;
+      padding-bottom: 20px;
+    }
+    .lock-msg {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.62rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--stone);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .lock-msg::before { content: '🔒'; font-size: 0.75rem; }
+
+    /* APPLICATION FORM */
+    .application {
+      padding: 140px 64px;
+      max-width: 1300px;
+      margin: 0 auto;
+    }
+    .app-header {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 80px;
+      align-items: end;
+      margin-bottom: 80px;
+    }
+    .app-headline {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(2.4rem, 4vw, 4rem);
+      color: var(--ink);
+      line-height: 1.05;
+    }
+    .app-headline em { font-style: italic; color: var(--moss); }
+    .app-desc {
+      font-size: 0.95rem;
+      line-height: 1.9;
+      color: var(--bark);
+      padding-bottom: 8px;
+    }
+
+    .app-form {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 32px;
+    }
+    .app-form .full-width { grid-column: 1 / -1; }
+
+    .form-group { display: flex; flex-direction: column; gap: 10px; }
+    .form-label {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.62rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--stone);
+    }
+    .form-input, .form-select, .form-textarea {
+      background: transparent;
+      border: none;
+      border-bottom: 1px solid var(--silence);
+      padding: 14px 0;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.95rem;
+      color: var(--ink);
+      outline: none;
+      transition: border-color 0.3s;
+      width: 100%;
+      -webkit-appearance: none;
+      appearance: none;
+    }
+    .form-input:focus, .form-select:focus, .form-textarea:focus {
+      border-color: var(--moss);
+    }
+    .form-textarea { resize: none; min-height: 80px; }
+    .form-select { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%239e9589'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 4px center; padding-right: 24px; cursor: none; }
+    .form-input::placeholder { color: var(--stone); }
+
+    .range-wrap { position: relative; }
+    .form-range {
+      width: 100%;
+      -webkit-appearance: none;
+      appearance: none;
+      height: 1px;
+      background: var(--silence);
+      outline: none;
+      cursor: none;
+      margin-top: 12px;
+    }
+    .form-range::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 14px;
+      height: 14px;
+      background: var(--moss);
+      border-radius: 50%;
+      cursor: none;
+    }
+    .range-labels {
+      display: flex;
+      justify-content: space-between;
+      font-family: 'DM Mono', monospace;
+      font-size: 0.55rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--stone);
+      margin-top: 8px;
+    }
+
+    .checkbox-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+      margin-top: 4px;
+    }
+    .checkbox-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      cursor: none;
+    }
+    .checkbox-item input[type="checkbox"] { display: none; }
+    .checkbox-box {
+      width: 18px;
+      height: 18px;
+      border: 1px solid var(--silence);
+      flex-shrink: 0;
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .checkbox-item input:checked + .checkbox-box {
+      background: var(--moss);
+      border-color: var(--moss);
+    }
+    .checkbox-item input:checked + .checkbox-box::after {
+      content: '✓';
+      font-size: 0.65rem;
+      color: white;
+    }
+    .checkbox-label {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.62rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--bark);
+    }
+
+    .form-submit-row {
+      grid-column: 1 / -1;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
       margin-top: 20px;
-      border: 1px solid #111;
+      padding-top: 40px;
+      border-top: 1px solid var(--silence);
     }
-
-    .map span {
-      background: rgba(0,0,0,0.6);
-      padding: 10px 20px;
-      border-radius: 20px;
-      color: #00e0c6;
-      font-size: 14px;
+    .submit-note {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.6rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--stone);
+      max-width: 300px;
+      line-height: 1.7;
     }
+    .btn-submit {
+      background: var(--ink);
+      color: var(--cream);
+      border: none;
+      font-family: 'DM Mono', monospace;
+      font-size: 0.72rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      padding: 20px 52px;
+      cursor: none;
+      transition: background 0.3s, transform 0.2s;
+    }
+    .btn-submit:hover { background: var(--moss); transform: translateY(-2px); }
 
+    /* FOOTER */
     footer {
-      padding: 40px;
-      border-top: 1px solid #111;
-      color: #666;
+      background: var(--ink);
+      color: var(--stone);
+      padding: 80px 64px 48px;
+    }
+    .footer-top {
+      display: grid;
+      grid-template-columns: 2fr 1fr 1fr 1fr;
+      gap: 64px;
+      padding-bottom: 64px;
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+      margin-bottom: 40px;
+    }
+    .footer-brand {}
+    .footer-logo {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.5rem;
+      color: var(--cream);
+      margin-bottom: 16px;
+    }
+    .footer-tagline {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.62rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--stone);
+      line-height: 1.8;
+      max-width: 220px;
+    }
+    .footer-col-title {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.58rem;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--clay);
+      margin-bottom: 20px;
+    }
+    .footer-links { list-style: none; display: flex; flex-direction: column; gap: 12px; }
+    .footer-links a {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.65rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--stone);
+      text-decoration: none;
+      transition: color 0.3s;
+    }
+    .footer-links a:hover { color: var(--clay); }
+    .footer-bottom {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .footer-copy {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.58rem;
+      letter-spacing: 0.1em;
+      color: rgba(158,149,137,0.4);
+    }
+
+    /* NEWSLETTER STRIP */
+    .newsletter-strip {
+      background: var(--moss);
+      padding: 60px 64px;
+    }
+    .newsletter-inner {
+      max-width: 1300px;
+      margin: 0 auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 40px;
+    }
+    .newsletter-copy {}
+    .newsletter-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.8rem;
+      color: var(--cream);
+      margin-bottom: 8px;
+    }
+    .newsletter-sub {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.62rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: rgba(244,239,232,0.6);
+    }
+    .newsletter-form {
+      display: flex;
+      gap: 0;
+      flex-shrink: 0;
+    }
+    .newsletter-input {
+      background: rgba(255,255,255,0.1);
+      border: 1px solid rgba(255,255,255,0.2);
+      border-right: none;
+      color: var(--cream);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.9rem;
+      padding: 16px 24px;
+      outline: none;
+      width: 280px;
+    }
+    .newsletter-input::placeholder { color: rgba(244,239,232,0.4); }
+    .newsletter-submit {
+      background: var(--ink);
+      color: var(--cream);
+      border: 1px solid var(--ink);
+      font-family: 'DM Mono', monospace;
+      font-size: 0.62rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      padding: 16px 28px;
+      cursor: none;
+      transition: background 0.3s;
+      white-space: nowrap;
+    }
+    .newsletter-submit:hover { background: var(--bark); }
+
+    /* FADE IN ANIMATION */
+    .fade-up {
+      opacity: 0;
+      transform: translateY(32px);
+      transition: opacity 0.8s ease, transform 0.8s ease;
+    }
+    .fade-up.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* RESPONSIVE */
+    @media (max-width: 900px) {
+      nav { padding: 20px 28px; }
+      .nav-links { display: none; }
+      .hero { grid-template-columns: 1fr; }
+      .hero-right { display: none; }
+      .hero-left { padding: 120px 28px 60px; }
+      .problem, .index-inner, .gated-inner, .app-header, .footer-top { grid-template-columns: 1fr; gap: 48px; }
+      .guide-grid { grid-template-columns: 1fr; }
+      .application, .guide-section, .index-section, .problem, .gated, .newsletter-strip, footer { padding-left: 28px; padding-right: 28px; }
+      .app-form { grid-template-columns: 1fr; }
+      .checkbox-grid { grid-template-columns: 1fr 1fr; }
+      .form-submit-row { flex-direction: column; align-items: flex-start; gap: 24px; }
+      .newsletter-inner { flex-direction: column; }
+      .newsletter-form { width: 100%; }
+      .newsletter-input { flex: 1; }
+      .footer-top { grid-template-columns: 1fr 1fr; }
+      body { cursor: auto; }
+      .cursor, .cursor-ring { display: none; }
+      .gate-form { flex-direction: column; }
+      .gate-input { border-right: 1px solid var(--silence); }
     }
   </style>
 </head>
-
 <body>
 
-<header>
-  <strong>QUIET TRAVEL</strong>
+  <div class="cursor" id="cursor"></div>
+  <div class="cursor-ring" id="cursorRing"></div>
+
+  <!-- NAV -->
   <nav>
-    <a href="#">Explore</a>
-    <a href="#">Map</a>
-    <a href="#">About</a>
+    <a class="nav-logo" href="#">Quiet Corners</a>
+    <ul class="nav-links">
+      <li><a href="#index">Quiet Index</a></li>
+      <li><a href="#guides">Guides</a></li>
+      <li><a href="#apply">Apply</a></li>
+      <li><a href="#dispatch">Dispatch</a></li>
+    </ul>
   </nav>
-</header>
 
-<section class="hero">
-  <div class="hero-overlay">
-    <h1>Find silence.</h1>
-    <p>Data-driven discovery of the quietest places on Earth — built for highly sensitive travelers.</p>
-    <div class="cta">
-      <button>Explore Quiet Places</button>
+  <!-- HERO -->
+  <section class="hero">
+    <div class="hero-left">
+      <p class="hero-eyebrow">The Calm Travel Index</p>
+      <h1 class="hero-headline">
+        Travel<br>for people<br>who feel<br><em>everything.</em>
+      </h1>
+      <p class="hero-sub">
+        Data-backed curation for travellers who get overwhelmed easily. Low stimulation. Crowd-light. Intentionally quiet.
+      </p>
+      <div class="hero-ctas">
+        <a href="#apply" class="btn-primary">Design My Quiet Trip</a>
+        <a href="#dispatch" class="btn-ghost">Subscribe to the Dispatch</a>
+      </div>
+    </div>
+    <div class="hero-right">
+      <div class="hero-right-inner"></div>
+      <div class="hero-score-badge">
+        <div class="badge-number">9.1</div>
+        <div class="badge-label">Quiet Score</div>
+      </div>
+      <div class="quiet-graphic">
+        <!-- Animated waveform bars — all heights varied, delays staggered -->
+        <script>
+          const heights = [8,12,18,10,24,6,20,14,28,8,16,10,22,6,18,12,26,8,14,20,10,24,8,16,12];
+          document.write(heights.map((h,i) => `<div class="qbar" style="height:${h}px;animation-delay:${(i*0.12).toFixed(2)}s"></div>`).join(''));
+        </script>
+      </div>
+    </div>
+  </section>
+
+  <!-- MARQUEE -->
+  <div class="marquee-wrap">
+    <div class="marquee-track" id="marqueeTrack">
+      <!-- duplicated for seamless loop -->
+      <script>
+        const items = ['Noise-Planet Data','OpenStreetMap Analysis','Crowd Density Mapping','Seasonal Patterns','Sensory Load Index','Psychological Fit Scoring','NoiseTube Integration','Boutique Partner Network'];
+        const html = items.map(i=>`<span class="marquee-item">${i}<span class="marquee-sep">·</span></span>`).join('');
+        document.write(html+html);
+      </script>
     </div>
   </div>
-</section>
 
-<section class="section">
-  <h2>Quiet Destinations</h2>
-
-  <div class="cards">
-
-    <div class="card">
-      <img src="https://images.unsplash.com/photo-1500530855697-b586d89ba3ee"/>
-      <div class="card-overlay">
-        <h3>Stewart Island</h3>
-        <div class="score">95 Quiet Score</div>
+  <!-- PROBLEM -->
+  <section class="problem">
+    <div class="fade-up">
+      <p class="section-tag">Why Quiet Corners</p>
+      <h2 class="problem-headline">Modern travel is <em>broken</em> for a particular kind of mind.</h2>
+      <p class="problem-text">
+        Booking platforms are built for volume — more options, more crowds, more noise. They optimise for transactions, not for you.
+        <br><br>
+        If you've ever felt exhausted by a holiday that was supposed to restore you, you are not the problem. The itinerary was.
+      </p>
+    </div>
+    <div class="problem-right fade-up">
+      <div class="stat-row">
+        <span class="stat-num">1 in 3</span>
+        <span class="stat-desc">Travellers report holiday burnout due to over-scheduling</span>
+      </div>
+      <div class="stat-row">
+        <span class="stat-num">68%</span>
+        <span class="stat-desc">Of urban professionals seek slower, quieter travel post-pandemic</span>
+      </div>
+      <div class="stat-row">
+        <span class="stat-num">4.2×</span>
+        <span class="stat-desc">More satisfaction reported on crowd-light, low-stimulation trips</span>
       </div>
     </div>
+  </section>
 
-    <div class="card">
-      <img src="https://images.unsplash.com/photo-1470770841072-f978cf4d019e"/>
-      <div class="card-overlay">
-        <h3>Isle of Eigg</h3>
-        <div class="score">92 Quiet Score</div>
+  <!-- QUIET INDEX TOOL -->
+  <section class="index-section" id="index">
+    <div class="index-inner">
+      <div class="index-left fade-up">
+        <p class="section-tag">The Quiet Index</p>
+        <h2 class="index-headline">Every destination<br>has a <em>noise footprint.</em></h2>
+        <p class="index-desc">
+          We synthesise open-source environmental data — noise maps, traffic proximity, crowd density patterns — into a single Quiet Score from 1 to 10.
+          <br><br>
+          Search any destination to see how it performs for overstimulated travellers.
+        </p>
+        <div class="score-pillars">
+          <div class="pillar">
+            <div class="pillar-icon">≋</div>
+            <div class="pillar-text"><strong>Environmental Noise</strong>Traffic, industry & nightlife decibel mapping via Noise-Planet</div>
+          </div>
+          <div class="pillar">
+            <div class="pillar-icon">◌</div>
+            <div class="pillar-text"><strong>Crowd Density</strong>Seasonal tourism patterns & OSM infrastructure proximity</div>
+          </div>
+          <div class="pillar">
+            <div class="pillar-icon">◇</div>
+            <div class="pillar-text"><strong>Psychological Fit</strong>Space, nature access & sensory load assessment</div>
+          </div>
+        </div>
+      </div>
+      <div class="index-right fade-up">
+        <div class="search-tool">
+          <span class="search-label">Analyse a destination</span>
+          <div class="search-input-wrap">
+            <input class="search-input" type="text" id="destinationInput" placeholder="e.g. Faroe Islands…" />
+          </div>
+          <button class="search-btn" onclick="runQuietScore()">Compute Quiet Score →</button>
+
+          <div class="loading-steps" id="loadingSteps">
+            <div class="load-step" id="step1">Querying Noise-Planet maps</div>
+            <div class="load-step" id="step2">Analysing OSM traffic proximity</div>
+            <div class="load-step" id="step3">Sampling NoiseTube crowd data</div>
+            <div class="load-step" id="step4">Calculating psychological fit</div>
+            <div class="load-step" id="step5">Composing Quiet Score</div>
+          </div>
+
+          <div class="result-panel" id="resultPanel">
+            <div class="score-display">
+              <div class="score-big" id="scoreBig">—</div>
+              <div class="score-denom">/ 10 Quiet Score</div>
+            </div>
+            <div class="score-bar-wrap">
+              <div class="score-bar-bg"><div class="score-bar-fill" id="scoreBar"></div></div>
+            </div>
+            <div class="score-insights" id="scoreInsights"></div>
+          </div>
+        </div>
       </div>
     </div>
+  </section>
 
-    <div class="card">
-      <img src="https://images.unsplash.com/photo-1501785888041-af3ef285b470"/>
-      <div class="card-overlay">
-        <h3>Faroe Villages</h3>
-        <div class="score">90 Quiet Score</div>
+  <!-- GUIDES -->
+  <section class="guide-section" id="guides">
+    <div class="guide-header fade-up">
+      <div>
+        <p class="section-tag">Featured Regions</p>
+        <h2 class="guide-headline">Places that <em>hold</em> you without noise.</h2>
+      </div>
+      <a href="#dispatch" class="btn-ghost" style="color:var(--bark)">All Guides</a>
+    </div>
+    <div class="guide-grid fade-up">
+      <div class="guide-card">
+        <div class="card-region">Northern Italy · Alpine Valleys</div>
+        <h3 class="card-title">The <em>Silent</em> Dolomites</h3>
+        <p class="card-desc">Val di Funes before 9am. No ski crowds, no coach tours. Just mist rolling off the Odle peaks and the sound of cows.</p>
+        <div class="card-meta">
+          <div>
+            <div class="card-score">Quiet Score</div>
+            <div class="card-score-val">8.4</div>
+          </div>
+          <a href="#dispatch" class="card-link">Read Guide →</a>
+        </div>
+      </div>
+      <div class="guide-card">
+        <div class="card-region">Japan · San'in Coast</div>
+        <h3 class="card-title"><em>Fog &amp;</em> Tottori</h3>
+        <p class="card-desc">Japan's least-visited prefecture. Vast sand dunes, onsen villages and the quiet that Tokyo residents drive five hours to find.</p>
+        <div class="card-meta">
+          <div>
+            <div class="card-score">Quiet Score</div>
+            <div class="card-score-val">9.2</div>
+          </div>
+          <a href="#dispatch" class="card-link">Read Guide →</a>
+        </div>
+      </div>
+      <div class="guide-card">
+        <div class="card-region">Portugal · Alentejo</div>
+        <h3 class="card-title">Cork Forests <em>&amp; Cork Silence</em></h3>
+        <p class="card-desc">Inland Portugal's slow-travel heartland. Wheat plains, whitewashed villages and a pace that the Algarve forgot twenty years ago.</p>
+        <div class="card-meta">
+          <div>
+            <div class="card-score">Quiet Score</div>
+            <div class="card-score-val">8.9</div>
+          </div>
+          <a href="#dispatch" class="card-link">Read Guide →</a>
+        </div>
       </div>
     </div>
+  </section>
 
-    <div class="card">
-      <img src="https://images.unsplash.com/photo-1500534314209-a25ddb2bd429"/>
-      <div class="card-overlay">
-        <h3>Karijini Edge</h3>
-        <div class="score">88 Quiet Score</div>
+  <!-- GATED GUIDE -->
+  <section class="gated">
+    <div class="gated-inner">
+      <div>
+        <span class="gated-label">Featured Deep Dive</span>
+        <h2 class="gated-headline">The <em>Quietest</em> Corners of Northern Italy</h2>
+        <p class="gated-sub">
+          Five hand-curated stops, best travel windows, where to stay and the emotional rhythm of each place — all scored against the Quiet Index. Free for Dispatch subscribers.
+        </p>
+        <div class="gate-form">
+          <input class="gate-input" type="email" placeholder="Your email address" />
+          <button class="gate-submit" onclick="unlockGuide(this)">Unlock Guide →</button>
+        </div>
+      </div>
+      <div class="gated-preview">
+        <div class="preview-stops">
+          <div class="stop-row">
+            <span class="stop-num">01</span>
+            <div class="stop-info">
+              <div class="stop-name"><em>Val di Funes</em></div>
+              <div class="stop-meta">Sept–Oct · Boutique agriturismo</div>
+            </div>
+            <div class="stop-score">8.4</div>
+          </div>
+          <div class="stop-row">
+            <span class="stop-num">02</span>
+            <div class="stop-info">
+              <div class="stop-name">Lake Iseo</div>
+              <div class="stop-meta">Apr–May · Lakeside hotel</div>
+            </div>
+            <div class="stop-score">7.9</div>
+          </div>
+          <div class="stop-row" style="filter:blur(3px); user-select:none">
+            <span class="stop-num">03</span>
+            <div class="stop-info">
+              <div class="stop-name"><em>Hidden</em></div>
+              <div class="stop-meta">Subscriber only</div>
+            </div>
+            <div class="stop-score">9.1</div>
+          </div>
+          <div class="stop-row" style="filter:blur(3px); user-select:none">
+            <span class="stop-num">04</span>
+            <div class="stop-info">
+              <div class="stop-name">Hidden</div>
+              <div class="stop-meta">Subscriber only</div>
+            </div>
+            <div class="stop-score">8.7</div>
+          </div>
+          <div class="stop-row" style="filter:blur(3px); user-select:none">
+            <span class="stop-num">05</span>
+            <div class="stop-info">
+              <div class="stop-name"><em>Hidden</em></div>
+              <div class="stop-meta">Subscriber only</div>
+            </div>
+            <div class="stop-score">9.4</div>
+          </div>
+        </div>
+        <div class="locked-overlay">
+          <span class="lock-msg">Subscribe to unlock full guide</span>
+        </div>
       </div>
     </div>
+  </section>
 
-  </div>
-</section>
+  <!-- APPLICATION FORM -->
+  <section class="application" id="apply">
+    <div class="app-header">
+      <div class="fade-up">
+        <p class="section-tag">Design My Quiet Trip</p>
+        <h2 class="app-headline">Tell us how<br>you <em>travel</em><br>best.</h2>
+      </div>
+      <p class="app-desc fade-up">
+        We match qualified travellers with trusted boutique partners who specialise in low-stimulation, crowd-light experiences. If your trip aligns with our quiet standards, we'll respond within 3–5 business days.
+      </p>
+    </div>
+    <div class="app-form fade-up">
 
-<section class="section">
-  <h2>Quiet Map</h2>
-  <div class="map">
-    <span>Interactive Quiet Map Coming Soon</span>
-  </div>
-</section>
+      <div class="form-group">
+        <label class="form-label">When are you planning to travel?</label>
+        <input class="form-input" type="text" placeholder="e.g. October 2025, flexible…" />
+      </div>
 
-<footer>
-  Quiet is a luxury.
-</footer>
+      <div class="form-group">
+        <label class="form-label">Destination preference (if any)</label>
+        <input class="form-input" type="text" placeholder="e.g. Japan, Southern Europe…" />
+      </div>
 
+      <div class="form-group">
+        <label class="form-label">Budget per person (approx.)</label>
+        <select class="form-select">
+          <option value="">Select range</option>
+          <option>Under $3,000</option>
+          <option>$3,000 – $6,000</option>
+          <option>$6,000 – $12,000</option>
+          <option>$12,000+</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Group size</label>
+        <select class="form-select">
+          <option value="">Select</option>
+          <option>Solo</option>
+          <option>Couple</option>
+          <option>Small group (3–5)</option>
+          <option>Family</option>
+        </select>
+      </div>
+
+      <div class="form-group full-width">
+        <label class="form-label">How easily do crowds overwhelm you?</label>
+        <div class="range-wrap">
+          <input class="form-range" type="range" min="1" max="5" value="3" id="crowdRange" oninput="updateRange(this)" />
+          <div class="range-labels">
+            <span>Barely at all</span>
+            <span id="rangeVal">Moderately</span>
+            <span>Extremely easily</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-group full-width">
+        <label class="form-label">Environments that calm you most</label>
+        <div class="checkbox-grid">
+          <label class="checkbox-item">
+            <input type="checkbox" /><div class="checkbox-box"></div>
+            <span class="checkbox-label">Mountains</span>
+          </label>
+          <label class="checkbox-item">
+            <input type="checkbox" /><div class="checkbox-box"></div>
+            <span class="checkbox-label">Sea & Coast</span>
+          </label>
+          <label class="checkbox-item">
+            <input type="checkbox" /><div class="checkbox-box"></div>
+            <span class="checkbox-label">Forest</span>
+          </label>
+          <label class="checkbox-item">
+            <input type="checkbox" /><div class="checkbox-box"></div>
+            <span class="checkbox-label">Countryside</span>
+          </label>
+          <label class="checkbox-item">
+            <input type="checkbox" /><div class="checkbox-box"></div>
+            <span class="checkbox-label">Cultural villages</span>
+          </label>
+          <label class="checkbox-item">
+            <input type="checkbox" /><div class="checkbox-box"></div>
+            <span class="checkbox-label">Desert</span>
+          </label>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Accommodation preference</label>
+        <select class="form-select">
+          <option value="">Select</option>
+          <option>Boutique luxury</option>
+          <option>Simple but refined</option>
+          <option>Eco-lodge</option>
+          <option>Rural / farm stay</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Are your dates flexible?</label>
+        <select class="form-select">
+          <option value="">Select</option>
+          <option>Very flexible (±2 weeks)</option>
+          <option>Somewhat flexible (±3 days)</option>
+          <option>Fixed dates</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Your email</label>
+        <input class="form-input" type="email" placeholder="hello@yourname.com" />
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Phone (optional — increases match quality)</label>
+        <input class="form-input" type="tel" placeholder="+1 000 000 0000" />
+      </div>
+
+      <div class="form-submit-row">
+        <p class="submit-note">
+          We review each application manually. If your needs align with our quiet travel standards, you'll hear from us within 3–5 business days.
+        </p>
+        <button class="btn-submit" onclick="submitApp(this)">Submit Application →</button>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- NEWSLETTER STRIP -->
+  <section class="newsletter-strip" id="dispatch">
+    <div class="newsletter-inner">
+      <div class="newsletter-copy">
+        <div class="newsletter-title">The Quiet Corners Dispatch</div>
+        <div class="newsletter-sub">One region · One quiet score breakdown · Three curated stays · Monthly</div>
+      </div>
+      <div class="newsletter-form">
+        <input class="newsletter-input" type="email" placeholder="Your email address" />
+        <button class="newsletter-submit" onclick="subscribeNewsletter(this)">Subscribe →</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="footer-top">
+      <div class="footer-brand">
+        <div class="footer-logo">Quiet Corners</div>
+        <div class="footer-tagline">Curated travel for people who get overwhelmed easily. Low stimulation. Crowd-light. Intentional.</div>
+      </div>
+      <div>
+        <div class="footer-col-title">Navigate</div>
+        <ul class="footer-links">
+          <li><a href="#index">Quiet Index</a></li>
+          <li><a href="#guides">Guides</a></li>
+          <li><a href="#apply">Apply</a></li>
+          <li><a href="#dispatch">Dispatch</a></li>
+        </ul>
+      </div>
+      <div>
+        <div class="footer-col-title">About</div>
+        <ul class="footer-links">
+          <li><a href="#">Our Method</a></li>
+          <li><a href="#">Data Sources</a></li>
+          <li><a href="#">Partner Programme</a></li>
+          <li><a href="#">Contact</a></li>
+        </ul>
+      </div>
+      <div>
+        <div class="footer-col-title">Legal</div>
+        <ul class="footer-links">
+          <li><a href="#">Privacy Policy</a></li>
+          <li><a href="#">Terms</a></li>
+          <li><a href="#">Cookie Settings</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <div class="footer-copy">© 2025 Quiet Corners. All rights reserved.</div>
+      <div class="footer-copy">Built for travellers who feel everything.</div>
+    </div>
+  </footer>
+
+  <script>
+    // Custom cursor
+    const cursor = document.getElementById('cursor');
+    const ring = document.getElementById('cursorRing');
+    let mx = 0, my = 0, rx = 0, ry = 0;
+    document.addEventListener('mousemove', e => {
+      mx = e.clientX; my = e.clientY;
+      cursor.style.left = mx + 'px'; cursor.style.top = my + 'px';
+    });
+    function animateRing() {
+      rx += (mx - rx) * 0.12;
+      ry += (my - ry) * 0.12;
+      ring.style.left = rx + 'px'; ring.style.top = ry + 'px';
+      requestAnimationFrame(animateRing);
+    }
+    animateRing();
+
+    // Scroll fade-in
+    const observer = new IntersectionObserver(entries => {
+      entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); } });
+    }, { threshold: 0.1 });
+    document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
+
+    // Range label
+    const rangeLabels = ['Not at all','Mildly','Moderately','Quite easily','Extremely easily'];
+    function updateRange(el) {
+      document.getElementById('rangeVal').textContent = rangeLabels[el.value - 1];
+    }
+
+    // Quiet Score tool
+    const destinations = {
+      default: { score: 7.6, noise: 'Moderate', crowd: 'Seasonal', fit: 'Good', best: 'Shoulder season' },
+      faroe: { score: 9.3, noise: 'Very low', crowd: 'Light', fit: 'Excellent', best: 'May–Sept' },
+      kyoto: { score: 5.8, noise: 'High in peak', crowd: 'Dense', fit: 'Moderate', best: 'Nov or March' },
+      bali: { score: 4.2, noise: 'Elevated', crowd: 'Very dense', fit: 'Low–moderate', best: 'Shoulder only' },
+      alentejo: { score: 8.9, noise: 'Very low', crowd: 'Light', fit: 'Excellent', best: 'Apr–Jun' },
+      tottori: { score: 9.2, noise: 'Low', crowd: 'Very light', fit: 'Excellent', best: 'Year-round' },
+      dolomites: { score: 8.4, noise: 'Low', crowd: 'Seasonal', fit: 'Very good', best: 'Sept–Oct' },
+    };
+
+    function getDestData(query) {
+      const q = query.toLowerCase();
+      if (q.includes('faroe')) return destinations.faroe;
+      if (q.includes('kyoto') || q.includes('japan')) return destinations.kyoto;
+      if (q.includes('bali')) return destinations.bali;
+      if (q.includes('alentejo') || q.includes('portugal')) return destinations.alentejo;
+      if (q.includes('tottori')) return destinations.tottori;
+      if (q.includes('dolomite') || q.includes('italy') || q.includes('funes')) return destinations.dolomites;
+      // generate plausible score for anything else
+      const base = 5 + Math.random() * 4;
+      const score = Math.round(base * 10) / 10;
+      return { score, noise: score > 8 ? 'Low' : score > 6 ? 'Moderate' : 'Elevated', crowd: score > 8 ? 'Light' : 'Moderate', fit: score > 8 ? 'Very good' : 'Moderate', best: 'Varies by month' };
+    }
+
+    async function runQuietScore() {
+      const query = document.getElementById('destinationInput').value.trim();
+      if (!query) { document.getElementById('destinationInput').focus(); return; }
+
+      const steps = document.getElementById('loadingSteps');
+      const result = document.getElementById('resultPanel');
+      steps.classList.add('visible');
+      result.classList.remove('visible');
+
+      const stepEls = ['step1','step2','step3','step4','step5'].map(id => document.getElementById(id));
+      stepEls.forEach(s => s.className = 'load-step');
+
+      const data = getDestData(query);
+
+      for (let i = 0; i < stepEls.length; i++) {
+        await new Promise(r => setTimeout(r, 550 + Math.random() * 300));
+        stepEls[i].className = 'load-step active';
+        if (i > 0) stepEls[i-1].className = 'load-step done';
+      }
+      await new Promise(r => setTimeout(r, 500));
+      stepEls[stepEls.length-1].className = 'load-step done';
+
+      document.getElementById('scoreBig').textContent = data.score.toFixed(1);
+      document.getElementById('scoreBar').style.width = (data.score / 10 * 100) + '%';
+      document.getElementById('scoreInsights').innerHTML = `
+        <div class="insight-row"><span>Noise Level</span><span class="insight-val">${data.noise}</span></div>
+        <div class="insight-row"><span>Crowd Density</span><span class="insight-val">${data.crowd}</span></div>
+        <div class="insight-row"><span>Psychological Fit</span><span class="insight-val">${data.fit}</span></div>
+        <div class="insight-row"><span>Best Window</span><span class="insight-val">${data.best}</span></div>
+      `;
+      result.classList.add('visible');
+    }
+
+    document.getElementById('destinationInput').addEventListener('keydown', e => {
+      if (e.key === 'Enter') runQuietScore();
+    });
+
+    // Gate form
+    function unlockGuide(btn) {
+      btn.textContent = 'Guide Unlocked ✓';
+      btn.style.background = 'var(--moss)';
+      const blurred = document.querySelectorAll('[style*="blur"]');
+      blurred.forEach(el => el.style.filter = 'none');
+      document.querySelector('.locked-overlay').style.display = 'none';
+    }
+
+    // App form submit
+    function submitApp(btn) {
+      btn.textContent = 'Application Received ✓';
+      btn.style.background = 'var(--moss)';
+      btn.disabled = true;
+    }
+
+    // Newsletter
+    function subscribeNewsletter(btn) {
+      btn.textContent = 'You\'re in ✓';
+      btn.style.background = 'var(--moss)';
+    }
+  </script>
 </body>
 </html>
